@@ -105,13 +105,6 @@ Features of the API:
 - Mobile-friendly responsive layout
 
 ---
-
-# 📸 Screenshots
-
-Add your application screenshots here.
-
-```md
-![Currency Converter Screenshot](./screenshots/home.png)
 ```
 
 ---
