@@ -1,146 +1,264 @@
-# 💱 Exchango – Real-Time Currency Converter
+# 💱 Exchango — Currency Converter
 
-Exchango is a modern and responsive currency converter application that allows users to convert currencies in real-time using live exchange rate data. The project is designed with a clean glassmorphism-inspired interface and focuses on delivering a smooth and interactive user experience.
+A full-stack, production-quality currency converter web application built with **Node.js + Express** on the backend and **HTML5 + CSS3 + Bootstrap 5 + Vanilla JS** on the frontend.
 
-Built using Vanilla JavaScript, Express.js, HTML, and CSS, the application provides accurate conversion rates, intuitive controls, and responsive design for both desktop and mobile users.
-
----
-
-# 🚀 Features
-
-- 🌍 Real-time currency conversion
-- 💹 Live exchange rate updates
-- 🔄 Instant currency swap functionality
-- 🇺🇸 Support for multiple international currencies
-- 📱 Responsive design for all devices
-- ⚡ Fast and seamless user interactions
-- ✅ Input validation and error handling
-- 🎨 Modern glassmorphism UI design
-- 🔁 Refresh exchange rates dynamically
+Uses the **[Frankfurter API](https://www.frankfurter.app/)** — completely **free**, open-source, **no API key required**, powered by European Central Bank data.
 
 ---
 
-# 🛠️ Technologies Used
+## 📁 Project Structure
 
-## Frontend
-- HTML5
-- CSS3
-- Vanilla JavaScript
-- Bootstrap 5
-
-## Backend
-- Express.js
-
-## API
-- Frankfurter API
-- European Central Bank Exchange Rate Data
-
----
-
-# 📂 Project Structure
-
-```bash
-├── index.html
-├── style.css
-├── script.js
-├── server.js
-├── package.json
-└── README.md
+```
+currency-converter/
+│
+├── server/                         # Express.js backend
+│   ├── server.js                   # Entry point — sets up Express, middleware, routes
+│   ├── routes/
+│   │   └── currencyRoutes.js       # API route definitions (/api/convert, /api/currencies)
+│   ├── controllers/
+│   │   └── currencyController.js   # Request handling, input validation, response building
+│   ├── services/
+│   │   └── currencyService.js      # Business logic — fetches rates from Frankfurter API
+│   ├── .env                        # Environment variables (PORT, optional API key)
+│   └── package.json                # Server dependencies
+│
+├── client/                         # Frontend (served as static files by Express)
+│   ├── index.html                  # Main HTML page
+│   ├── style.css                   # Custom CSS (glassmorphism design)
+│   └── script.js                   # All UI logic, Fetch API calls, validation
+│
+└── README.md                       # This file
 ```
 
 ---
 
-# ⚙️ Getting Started
+## 🚀 Quick Start
 
-## 1. Clone the Repository
-
-```bash
-git clone https://github.com/your-username/exchango-currency-converter.git
-```
-
-## 2. Navigate to the Project Directory
+### Step 1 — Install Dependencies
 
 ```bash
-cd exchango-currency-converter
-```
-
-## 3. Install Dependencies
-
-```bash
+cd currency-converter/server
 npm install
 ```
 
-## 4. Start the Application
+> This installs: `express`, `cors`, `axios`, `dotenv`, and `nodemon`.
 
-```bash
-node server.js
+---
+
+### Step 2 — Configure Environment (optional)
+
+Open `server/.env`:
+
+```env
+PORT=5000
+EXCHANGE_RATE_API_KEY=your_key_here   # Not needed for Frankfurter
 ```
 
-## 5. Open in Browser
+The default setup uses the **Frankfurter API** which requires **no key**.
 
+---
+
+### Step 3 — Start the Server
+
+**Development (with auto-reload):**
 ```bash
+cd server
+npm run dev
+```
+
+**Production:**
+```bash
+cd server
+npm start
+```
+
+You should see:
+```
+🚀 Currency Converter API running at http://localhost:5000
+📊 Test endpoint: http://localhost:5000/api/convert?from=USD&to=INR&amount=100
+❤️  Health check: http://localhost:5000/api/health
+```
+
+---
+
+### Step 4 — Open the App
+
+Open your browser and navigate to:
+```
 http://localhost:5000
 ```
 
----
-
-# 🌐 API Integration
-
-This application uses the Frankfurter API to fetch real-time currency exchange rates.
-
-Features of the API:
-- Reliable exchange rate data
-- Updated by the European Central Bank
-- Fast and lightweight API responses
+The Express server serves both the API **and** the frontend from the same port.
 
 ---
 
-# ✨ Application Highlights
+## 🔌 API Endpoints
 
-- Interactive and modern user interface
-- Dynamic currency selection
-- Real-time exchange rate conversion
-- Smooth animations and transitions
-- Error handling for invalid inputs
-- Mobile-friendly responsive layout
+### `GET /api/convert`
 
----
+Converts an amount from one currency to another.
+
+**Query Parameters:**
+
+| Parameter | Type   | Required | Description              |
+|-----------|--------|----------|--------------------------|
+| `from`    | string | ✅       | Source currency (e.g., `USD`) |
+| `to`      | string | ✅       | Target currency (e.g., `INR`) |
+| `amount`  | number | ✅       | Amount to convert        |
+
+**Example Request:**
+```
+GET /api/convert?from=USD&to=INR&amount=100
+```
+
+**Example Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "from": "USD",
+    "to": "INR",
+    "amount": 100,
+    "convertedAmount": 8391.25,
+    "rate": 83.9125,
+    "inverseRate": 0.011917,
+    "lastUpdated": "2024-11-15"
+  }
+}
+```
+
+**Error Response:**
+```json
+{
+  "success": false,
+  "error": "Amount must be a positive number."
+}
 ```
 
 ---
 
-# 📈 Future Improvements
+### `GET /api/currencies`
 
-- 📊 Exchange rate charts and analytics
-- 🌙 Dark mode support
-- 📅 Historical currency tracking
-- ⭐ Save favorite currencies
-- 🌎 Automatic location-based currency selection
-- 📱 Progressive Web App (PWA) support
+Returns all supported currency codes and names.
 
----
-
-# 🤝 Contribution
-
-Contributions are welcome.
-
-If you would like to improve this project:
-
-1. Fork the repository
-2. Create a new branch
-3. Make your changes
-4. Submit a Pull Request
+**Example Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "AUD": "Australian Dollar",
+    "BGN": "Bulgarian Lev",
+    "EUR": "Euro",
+    "USD": "US Dollar",
+    ...
+  }
+}
+```
 
 ---
 
+### `GET /api/health`
+
+Health check endpoint.
+
+```json
+{
+  "success": true,
+  "message": "Currency Converter API is running ✅",
+  "timestamp": "2024-11-15T10:32:05.000Z"
+}
+```
 
 ---
 
-# ✅ Conclusion
+## ✨ Features
 
-Exchango demonstrates the implementation of real-time API integration, responsive frontend development, and interactive UI design using modern web technologies. The project highlights practical skills in JavaScript, Express.js, API handling, and responsive design while providing a clean and user-friendly currency conversion experience.
-
-
+| Feature | Status |
+|---------|--------|
+| Convert between 30+ currencies | ✅ |
+| Real-time exchange rates (ECB) | ✅ |
+| Currency swap button | ✅ |
+| Loading spinner | ✅ |
+| Input validation | ✅ |
+| Error handling (network + API) | ✅ |
+| Success/error alerts | ✅ |
+| Last updated date | ✅ |
+| Responsive mobile design | ✅ |
+| Glassmorphism UI | ✅ |
+| Bottom navigation bar | ✅ |
+| No API key required | ✅ |
 
 ---
 
+## 🌐 About the Frankfurter API
+
+- **URL:** https://www.frankfurter.app/
+- **Free:** Yes, completely free forever
+- **No key:** No signup or API key required
+- **Source:** European Central Bank (ECB) exchange rates
+- **Update frequency:** Daily on business days (~16:00 CET)
+- **Currencies:** 33 world currencies
+- **Rate limits:** Generous; suitable for learning projects
+
+---
+
+## 🔑 Optional: Using ExchangeRate-API (more currencies)
+
+If you need crypto or more exotic currencies:
+
+1. Go to https://www.exchangerate-api.com/
+2. Click **"Get Free Key"** — free plan gives 1,500 requests/month
+3. Add to `server/.env`: `EXCHANGE_RATE_API_KEY=your_key`
+4. Modify `currencyService.js` to use that API instead
+
+---
+
+## 🛠 Tech Stack
+
+| Layer    | Technology              |
+|----------|------------------------|
+| Backend  | Node.js 18+, Express.js |
+| HTTP     | Axios                   |
+| Config   | dotenv                  |
+| CORS     | cors middleware         |
+| Frontend | HTML5, CSS3, Vanilla JS |
+| UI       | Bootstrap 5.3           |
+| Fonts    | Google Fonts (DM Sans)  |
+| API      | Frankfurter (ECB)       |
+
+---
+
+## 📋 npm Commands
+
+```bash
+npm install        # Install all dependencies
+npm start          # Start production server
+npm run dev        # Start with nodemon (auto-reload on save)
+```
+
+---
+
+## 🧪 Testing the API
+
+**With curl:**
+```bash
+# Basic conversion
+curl "http://localhost:5000/api/convert?from=USD&to=EUR&amount=500"
+
+# Health check
+curl "http://localhost:5000/api/health"
+
+# All currencies
+curl "http://localhost:5000/api/currencies"
+```
+
+**With your browser:**
+```
+http://localhost:5000/api/convert?from=GBP&to=JPY&amount=250
+```
+
+---
+
+## 📄 License
+
+MIT — feel free to use in personal and commercial projects.
